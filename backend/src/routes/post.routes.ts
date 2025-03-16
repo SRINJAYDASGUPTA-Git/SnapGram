@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction, Router } from "express";
 import { authenticate } from "../middleware/auth.middleware";
-import { getAllPostsByUser, createPost } from "../controllers/post.controller";
+import {
+  getAllPostsBySelfUser,
+  createPost,
+  getPostByUserId,
+} from "../controllers/post.controller";
 
 const router = Router();
 
@@ -15,7 +19,7 @@ const router = Router();
  * @swagger
  * /post:
  *   get:
- *     summary: Get all posts by user
+ *     summary: Get all posts by self/logged in user
  *     tags: [Post]
  *     responses:
  *       200:
@@ -46,7 +50,7 @@ router.get(
     authenticate(req, res, next);
   },
   async (req: Request, res: Response) => {
-    await getAllPostsByUser(req, res);
+    await getAllPostsBySelfUser(req, res);
   }
 );
 
@@ -84,4 +88,53 @@ router.post(
   async (req: Request, res: Response) => {
     await createPost(req, res);
   }
-)
+);
+
+/**
+ * @swagger
+ * /post/{userId}:
+ *  get:
+ *   summary: Get all posts by user id
+ *   tags: [Post]
+ *   parameters:
+ *    - in: path
+ *      name: userId
+ *      required: true
+ *      description: User ID
+ *      schema:
+ *       type: string
+ *       format: uuid
+ *   responses:
+ *    200:
+ *     description: Posts fetched successfully 
+ *     content:
+ *      application/json:
+ *     schema:
+ *      type: array
+ *      items:
+ *       type: object
+ *       properties:
+ *        id:
+ *         type: string
+ *         format: uuid
+ *        caption:
+ *         type: string
+ *        media_url:
+ *         type: string 
+ *        ownerId: 
+ *         type: string
+ *         format: uuid
+ *    500:
+ *     description: Internal server error
+ *
+ */
+
+router.get(
+  "/:userId",
+  (req: Request, res: Response, next: NextFunction) => {
+    authenticate(req, res, next);
+  },
+  async (req: Request, res: Response) => {
+    await getPostByUserId(req, res);
+  }
+);

@@ -15,12 +15,10 @@ app.use(cors());
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 
-
 app.get("/", (req, res) => {
-    res.send("Server Started Successfully");
-}
-);
+  res.send("Server Started Successfully");
+});
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
