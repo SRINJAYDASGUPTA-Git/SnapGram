@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { register, login } from "../controllers/auth.controller";
+import { register, login, getCurrentUser } from "../controllers/auth.controller";
 
 const router = Router();
 
@@ -38,7 +38,9 @@ const router = Router();
  *       500:
  *         description: Internal server error
  */
-router.post("/register", register);
+router.post("/register", async (req, res) => {
+  await register(req, res);
+});
 
 /**
  * @swagger
@@ -53,7 +55,7 @@ router.post("/register", register);
  *           schema:
  *             type: object
  *             properties:
- *               email:
+ *               login:
  *                 type: string
  *               password:
  *                 type: string
@@ -69,6 +71,10 @@ router.post("/register", register);
  */
 router.post("/login", async (req, res) => {
   await login(req, res);
+});
+
+router.get("/me", async (req, res) => {
+  await getCurrentUser(req, res);
 });
 
 export default router;

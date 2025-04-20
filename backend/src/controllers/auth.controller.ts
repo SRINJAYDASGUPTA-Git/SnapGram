@@ -27,7 +27,7 @@ export const register = async (req: Request, res: Response) => {
 
     res.status(201).json({ message: "User registered", token });
   } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error", error });
   }
 };
 
@@ -36,11 +36,8 @@ export const login = async (req: Request, res: Response) => {
     const { login, password } = req.body;
     const user = await prisma.user.findFirst({
       where: {
-      OR: [
-        { email: login },
-        { username: login }
-      ]
-      }
+        OR: [{ email: login }, { username: login }],
+      },
     });
 
     if (user && !(await bcrypt.compare(password, user.password))) {
@@ -49,10 +46,32 @@ export const login = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: "30D" });
+    const token = jwt.sign(
+      { id: user.id, username: user.username },
+      JWT_SECRET,
+      { expiresIn: "30D" }
+    );
 
     return res.status(200).json({ message: "Login successful", token });
   } catch (error) {
     return res.status(500).json({ message: "Internal server error", error });
   }
 };
+
+export const getCurrentUser = async (req: Request, res: Response) => {
+  try {
+    const token = req.headers["authorization"]?.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "Unauthorized" });
+
+    const decoded: any = jwt.verify(token, JWT_SECRET);
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+    });
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error", error });
+  }
+}
