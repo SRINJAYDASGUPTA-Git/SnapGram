@@ -3,10 +3,11 @@ import React from "react";
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import axios from '@/utils/axiosInstance';
+import { AuthResponse } from "@/types";
 const Login = () => {
   const [emailOrUsername, setEmailOrUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const url = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
   const router = useRouter();
 const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevent the default form submission behavior
@@ -15,25 +16,14 @@ const handleSignIn = async (e: React.FormEvent) => {
         return;
     }
     try {
-        const response = await fetch(`${url}/auth/login`, {
-            method: "POST", // Specify the HTTP method
-            headers: {
-                "Content-Type": "application/json", // Inform the server you're sending JSON
-            },
-            body: JSON.stringify({
-                login: emailOrUsername,
-                password: password,
-            }),
+        const response = await axios.post('/auth/login', {
+            login: emailOrUsername,
+            password: password,
         });
-
-        if (!response.ok) {
-            throw new Error("Failed to sign in");
-        }
-
-        const data = await response.json(); // Parse the JSON response
+        const data: AuthResponse = response.data as AuthResponse; // Extract the response data
         console.log(data); // Handle the response data
-        localStorage.setItem("accessToken", data.token)
-        router.push("/")
+        localStorage.setItem("accessToken", data.token);
+        router.push("/");
     } catch (error) {
         console.error("Error during sign-in:", error);
     }

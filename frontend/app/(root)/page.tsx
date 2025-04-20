@@ -5,15 +5,15 @@ import { useRouter } from "next/navigation";
 
 export default function Home() {
 
-  const { user, loading } = useUser() ?? { user: null, loading: true };
-  console.log(user, loading);
+  const { user } = useUser() ?? { user: null, loading: true };
+  console.log(user);
   const router = useRouter();
-  if (loading) return <p>Loading user...</p>;
+  // if (loading) return <p>Loading user...</p>;
   if (!user)
-    router.push("/auth/login");
+    router.push("/login");
   return (
     <div>
-      {user ? <h1>Hello, {user.username}</h1> : <p>User not logged in.</p>}
+      <h1>Hello, {user?.username}</h1>
     </div>
   );
 }

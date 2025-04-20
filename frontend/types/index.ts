@@ -48,3 +48,8 @@ export interface Comment {
   post: Post;
   liked_by: User[];
 }
+
+export interface AuthResponse {
+    token: string;
+    message: string;
+}

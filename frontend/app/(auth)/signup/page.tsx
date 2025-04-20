@@ -1,6 +1,8 @@
+'use client'
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Image from "next/image";
+import { AuthResponse } from "@/types";
 
 const Signup = () => {
   const [username, setUsername] = useState<string>("");
@@ -16,23 +18,13 @@ const Signup = () => {
       return;
     }
     try {
-      const response = await fetch(`${url}/auth/register`, {
-        method: "POST", // Specify the HTTP method
-        headers: {
-          "Content-Type": "application/json", // Inform the server you're sending JSON
-        },
-        body: JSON.stringify({
-          username: username,
-          email: email,
-          password: password,
-        }),
+      const response = await axios.post("/auth/register", {
+      username: username,
+      email: email,
+      password: password,
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to sign in");
-      }
-
-      const data = await response.json(); // Parse the JSON response
+      const data:AuthResponse = response.data as AuthResponse; // Extract the response data
       console.log(data); // Handle the response data
       localStorage.setItem("accessToken", data.token);
       router.push("/");

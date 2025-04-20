@@ -1,5 +1,6 @@
 "use client";
 import { User } from "@/types";
+import axios from "@/utils/axiosInstance";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext<
@@ -7,7 +8,7 @@ const AuthContext = createContext<
 >(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   const url = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
@@ -15,15 +16,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     async function fetchUser() {
       try {
-        const res = await fetch(`${url}/auth/me`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        });
+        const res = await axios.get(`/auth/me`);
 
-        if (!res.ok) throw new Error("Not authenticated");
+        if (res.status === 401) throw new Error("Not authenticated");
 
-        const userData = await res.json();
+        const userData = await res.data as User;
         setUser(userData);
       } catch (err) {
         setUser(null);
