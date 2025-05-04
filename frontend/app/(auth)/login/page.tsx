@@ -1,19 +1,20 @@
 'use client'
 import * as z from "zod";
-import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import {useForm} from "react-hook-form";
+import {useRouter} from "next/navigation";
+import React, {useState} from "react";
 import Image from "next/image";
-import { toast } from "sonner"
-import { zodResolver } from "@hookform/resolvers/zod";
+import {toast} from "sonner"
+import {zodResolver} from "@hookform/resolvers/zod";
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { AuthResponse } from "@/types";
-import Loader  from "@/components/shared/Loader";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
+import {Input} from "@/components/ui/input";
+import {Button} from "@/components/ui/button";
+import {AuthResponse} from "@/types";
+import Loader from "@/components/shared/Loader";
 import Link from "next/link";
 import axios from '@/utils/axiosInstance';
+
 const Login = () => {
   const router = useRouter();
     const SigninValidation = z.object({
@@ -43,7 +44,7 @@ const handleSignIn = async (user: z.infer<typeof SigninValidation>) => {
         localStorage.setItem("accessToken", data.token);
         form.reset();
         toast("Login successful!");
-        router.push("/onboarding");
+        router.push("/");
     } catch (error) {
         toast("Something went wrong. Please check your credentials.");
         console.error("Error during sign-in:", error);

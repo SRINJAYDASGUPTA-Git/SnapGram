@@ -1,17 +1,17 @@
 'use client'
 import * as z from "zod";
-import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import {useForm} from "react-hook-form";
+import {useRouter} from "next/navigation";
+import React, {useState} from "react";
 import Image from "next/image";
-import { toast } from "sonner"
-import { zodResolver } from "@hookform/resolvers/zod";
+import {toast} from "sonner"
+import {zodResolver} from "@hookform/resolvers/zod";
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { AuthResponse } from "@/types";
-import { Loader } from "lucide-react";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
+import {Input} from "@/components/ui/input";
+import {Button} from "@/components/ui/button";
+import {AuthResponse} from "@/types";
+import {Loader} from "lucide-react";
 import Link from "next/link";
 import axios from '@/utils/axiosInstance';
 
@@ -47,7 +47,7 @@ const Signup = () => {
       console.log(data); // Handle the response data
       localStorage.setItem("accessToken", data.token);
       form.reset();
-      router.push("/");
+        router.push("/onboarding");
     } catch (error) {
       toast("Something went wrong. Please login your new account");
       console.error("Error during sign-in:", error);
